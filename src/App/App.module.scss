@@ -7,16 +7,76 @@
   width: 100%;
   max-width: 2048px; // Max for high res screens
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, max-content));
+  grid-template-columns: repeat(auto-fit, minmax(370px, max-content));
   grid-gap: 2rem;
   padding: 2rem;
   justify-content: center;
 }
 
 .column {
-  max-width: 250px;
+  max-width: 370px;
   box-shadow: -10px 10px 80px rgba(0, 0, 0, 0.12);
   border: 1px solid #eee;
   border-radius: 8px;
-  padding: 1rem;
+  padding: 1.5rem;
+}
+
+
+.candidates {
+  list-style: none;
+  padding: 0;
+  margin: 1.5rem 0;
+}
+
+.candidate {
+  display: grid;
+  grid-template-columns: 1fr max-content;
+  grid-gap: 1rem;
+  justify-content: space-between;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.5rem;
+  padding: 1.5rem;
+
+  &:hover {
+  box-shadow:  0px 2px 20px rgba(0, 0, 0, 0.1);
+  }
+
+  > .info {
+    text-align: left;
+    font-weight: 500;
+    // Manage long inputs
+    overflow: hidden;
+    overflow-wrap: break-word;
+    word-break: keep-all;
+
+    > p:last-child {
+      color: #666
+    }
+  }
+
+  > .actions {
+    text-align: left;
+
+    > button:first-child {
+      margin-right: 0.5rem;
+    }
+  }
+}
+
+.arrowButton {
+  color: #fff;
+  background: #000;
+  height: 2rem;
+  border: 1px solid #000;
+  border-radius: 4px;
+  padding: 0.375rem 0.75rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.arrowButton:hover {
+  color: #000;
+  background-color: #fff;
 }

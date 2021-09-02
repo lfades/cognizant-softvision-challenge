@@ -28,7 +28,7 @@ function App() {
       {columns.map((value, index) => (
         <div key={index} className={styles.column}>
           <h2>{value}</h2>
-          <ul>
+          <ul className={styles.candidates}>
             {candidates
               .filter((candidate) => candidate.step === value)
               .map((candidate, index) => (
@@ -97,12 +97,22 @@ function Candidate({
   };
 
   return (
-    <li>
-      <div>
-        <p>{candidate.name}</p>
-        <p>{candidate.comments}</p>
-        {prevColumn ? <button onClick={() => changeColumn(prevColumn)}>⬅️</button> : null}
-        {nextColumn ? <button onClick={() => changeColumn(nextColumn)}>➡️</button> : null}
+    <li className={styles.candidate}>
+      <div className={styles.info}>
+        <p className={styles.name}>{candidate.name}</p>
+        <p className={styles.comments}>{candidate.comments}</p>
+      </div>
+      <div className={styles.actions}>
+        {prevColumn ? (
+          <button className={styles.arrowButton} onClick={() => changeColumn(prevColumn)}>
+            &larr;
+          </button>
+        ) : null}
+        {nextColumn ? (
+          <button className={styles.arrowButton} onClick={() => changeColumn(nextColumn)}>
+            &rarr;
+          </button>
+        ) : null}
       </div>
     </li>
   );
