@@ -20,7 +20,6 @@ type Candidate = Candidates[0];
 
 function App() {
   const [candidates, setCandidates] = React.useState<Candidates>(candidatesJson);
-  const [isAdding, setIsAdding] = React.useState(false);
   const firstColumn = columns[0];
 
   return (
@@ -36,47 +35,7 @@ function App() {
               ))}
           </ul>
           {value === firstColumn && (
-            <form
-              className={styles.form}
-              onSubmit={(e) => {
-                e.preventDefault();
-                const form = e.target as any;
-                const name = form.name.value;
-                const comments = form.comments.value;
-
-                setCandidates([
-                  ...candidates,
-                  {
-                    id: name,
-                    step: firstColumn,
-                    name,
-                    comments,
-                  },
-                ]);
-                setIsAdding(false);
-              }}
-            >
-              {isAdding && (
-                <>
-                  <input required name="name" placeholder="Nombre" type="text" />
-                  <input name="comments" placeholder="Comentario" type="text" />
-                </>
-              )}
-              <div className={styles.formActions}>
-                {isAdding && (
-                  <button className={styles.button} type="submit">
-                    Agregar
-                  </button>
-                )}
-                <button
-                  className={styles.button}
-                  type="button"
-                  onClick={() => setIsAdding(!isAdding)}
-                >
-                  {isAdding ? "Cancelar" : "Agregar candidato"}
-                </button>
-              </div>
-            </form>
+            <CandidateForm setCandidates={setCandidates} step={firstColumn} />
           )}
         </div>
       ))}
@@ -125,6 +84,68 @@ function Candidate({
         ) : null}
       </div>
     </li>
+  );
+}
+
+function CandidateForm({
+  step,
+  setCandidates,
+}: {
+  step: Columns;
+  setCandidates: React.Dispatch<React.SetStateAction<Candidates>>;
+}) {
+  const [isAdding, setIsAdding] = React.useState(false);
+  const [error, setError] = React.useState("");
+
+  return (
+    <form
+      className={styles.form}
+      onSubmit={(e) => {
+        e.preventDefault();
+        const form = e.target as any;
+        const name = form.name.value;
+        const comments = form.comments.value;
+
+        if (error) setError("");
+        setCandidates((candidates) => {
+          if (candidates.some((c) => c.name === name)) {
+            setError("No se vale repetir candidato, valora tu tiempo che.");
+
+            // Return the same state to avoid a re-render
+            return candidates;
+          }
+
+          setIsAdding(false);
+
+          return [...candidates, {id: name, step, name, comments}];
+        });
+      }}
+    >
+      {isAdding && (
+        <>
+          <input required name="name" placeholder="Nombre" type="text" />
+          <input name="comments" placeholder="Comentario" type="text" />
+        </>
+      )}
+      {error && <p>{error}</p>}
+      <div className={styles.formActions}>
+        {isAdding && (
+          <button className={styles.button} type="submit">
+            Agregar
+          </button>
+        )}
+        <button
+          className={styles.button}
+          type="button"
+          onClick={() => {
+            if (error) setError("");
+            setIsAdding(!isAdding);
+          }}
+        >
+          {isAdding ? "Cancelar" : "Agregar candidato"}
+        </button>
+      </div>
+    </form>
   );
 }
 
