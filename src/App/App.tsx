@@ -36,37 +36,47 @@ function App() {
               ))}
           </ul>
           {value === firstColumn && (
-            <>
-              {isAdding && (
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    const form = e.target as any;
-                    const name = form.name.value;
-                    const comments = form.comments.value;
+            <form
+              className={styles.form}
+              onSubmit={(e) => {
+                e.preventDefault();
+                const form = e.target as any;
+                const name = form.name.value;
+                const comments = form.comments.value;
 
-                    setCandidates([
-                      ...candidates,
-                      {
-                        id: name,
-                        step: firstColumn,
-                        name,
-                        comments,
-                      },
-                    ]);
-                    setIsAdding(false);
-                  }}
-                >
+                setCandidates([
+                  ...candidates,
+                  {
+                    id: name,
+                    step: firstColumn,
+                    name,
+                    comments,
+                  },
+                ]);
+                setIsAdding(false);
+              }}
+            >
+              {isAdding && (
+                <>
                   <input required name="name" placeholder="Nombre" type="text" />
                   <input name="comments" placeholder="Comentario" type="text" />
-
-                  <button type="submit">Agregar</button>
-                </form>
+                </>
               )}
-              <button onClick={() => setIsAdding(!isAdding)}>
-                {isAdding ? "Cancelar" : "Agregar candidato"}
-              </button>
-            </>
+              <div className={styles.formActions}>
+                {isAdding && (
+                  <button className={styles.button} type="submit">
+                    Agregar
+                  </button>
+                )}
+                <button
+                  className={styles.button}
+                  type="button"
+                  onClick={() => setIsAdding(!isAdding)}
+                >
+                  {isAdding ? "Cancelar" : "Agregar candidato"}
+                </button>
+              </div>
+            </form>
           )}
         </div>
       ))}
@@ -99,17 +109,17 @@ function Candidate({
   return (
     <li className={styles.candidate}>
       <div className={styles.info}>
-        <p className={styles.name}>{candidate.name}</p>
-        <p className={styles.comments}>{candidate.comments}</p>
+        <p>{candidate.name}</p>
+        <p>{candidate.comments}</p>
       </div>
       <div className={styles.actions}>
         {prevColumn ? (
-          <button className={styles.arrowButton} onClick={() => changeColumn(prevColumn)}>
+          <button className={styles.button} onClick={() => changeColumn(prevColumn)}>
             &larr;
           </button>
         ) : null}
         {nextColumn ? (
-          <button className={styles.arrowButton} onClick={() => changeColumn(nextColumn)}>
+          <button className={styles.button} onClick={() => changeColumn(nextColumn)}>
             &rarr;
           </button>
         ) : null}
