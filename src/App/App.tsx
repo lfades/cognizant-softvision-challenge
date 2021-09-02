@@ -1,10 +1,12 @@
 import React from "react";
 
 import candidatesJson from "../api/candidates.json";
+import {LOCAL_STORAGE_ENABLED} from "../api/constants";
 
+import useLocalStorage from "./use-local-storage";
 import styles from "./App.module.scss";
 
-const columns = [
+const COLUMNS = [
   "Entrevista inicial",
   "Entrevista técnica",
   "Oferta",
@@ -12,19 +14,30 @@ const columns = [
   "Rechazo",
 ] as const;
 
-type Columns = typeof columns[number];
+type Columns = typeof COLUMNS[number];
 
 type Candidates = typeof candidatesJson;
 
 type Candidate = Candidates[0];
 
 function App() {
-  const [candidates, setCandidates] = React.useState<Candidates>(candidatesJson);
-  const firstColumn = columns[0];
+  const [candidates, setCandidates, ready] = useLocalStorage<Candidates>(
+    "candidates",
+    // The initial value if localStorage is enabled should be an empty array, that should
+    // prevent a SSR mismatch, not that it matters because this is not using SSR, but anyway...
+    LOCAL_STORAGE_ENABLED ? [] : candidatesJson,
+  );
+  const firstColumn = COLUMNS[0];
+
+  React.useEffect(() => {
+    if (LOCAL_STORAGE_ENABLED && ready && !candidates.length) {
+      setCandidates(candidatesJson);
+    }
+  }, [candidates.length, setCandidates, ready]);
 
   return (
     <main className={styles.columns}>
-      {columns.map((value, index) => (
+      {COLUMNS.map((value, index) => (
         <div key={index} className={styles.column}>
           <h2>{value}</h2>
           <ul className={styles.candidates}>
@@ -50,9 +63,9 @@ function Candidate({
   candidate: Candidate;
   setCandidates: React.Dispatch<React.SetStateAction<Candidates>>;
 }) {
-  const columnIndex = columns.findIndex((column) => column === candidate.step);
-  const prevColumn = columns[columnIndex - 1];
-  const nextColumn = columns[columnIndex + 1];
+  const columnIndex = COLUMNS.findIndex((column) => column === candidate.step);
+  const prevColumn = COLUMNS[columnIndex - 1];
+  const nextColumn = COLUMNS[columnIndex + 1];
   const changeColumn = (column: Columns) => {
     setCandidates((candidates) =>
       candidates.map((c) => {
